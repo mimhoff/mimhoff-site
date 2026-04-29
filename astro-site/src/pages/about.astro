@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { Image } from 'astro:assets';
+import headshot from '../assets/headshot.jpg';
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Matthew Imhoff",
+  "url": "https://mimhoff.com",
+  "jobTitle": "Technical Delivery Manager",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "UTS Rapido"
+  },
+  "sameAs": [
+    "https://linkedin.com/in/matthewimhoff",
+    "https://github.com/mimhoff"
+  ]
+});
+---
+
+<BaseLayout
+  title="About — Matthew Imhoff"
+  description="Researcher-practitioner working at the intersection of AI, humanitarian field operations, and engineering education. Based in Sydney."
+>
+  <Fragment slot="head-extra">
+    <script type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
+  <Header />
+  <main id="main">
+    <section class="py-16 bg-game-bg">
+      <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-xs font-bold uppercase tracking-widest text-game-green mb-8">About</h2>
+
+        <div class="grid md:grid-cols-[1fr_auto] gap-12 items-start">
+          <div class="space-y-5 text-game-faint leading-relaxed">
+            <p>
+              I work at the intersection of technology, humanitarian action, and education. My research interest is in
+              how AI and software systems can be designed and deployed in humanitarian field contexts — not as
+              hypothetical interventions, but as tools shaped by the constraints and realities of community-facing work.
+            </p>
+
+            <p>
+              By day, I'm a Technical Delivery Manager at{' '}
+              <a href="https://uts.edu.au/rapido" target="_blank" rel="noopener noreferrer" class="text-game-green-light font-medium">UTS Rapido</a>,
+              a university-embedded R&D hub at the University of Technology Sydney, where I lead software delivery for
+              industry and social impact partners. I also teach Technology Innovation Management at UTS and design
+              internship programs that connect engineering students with real-world project work.
+            </p>
+
+            <p>
+              Through IEEE, I chair the{' '}
+              <a href="https://humanitarian.ieee.org/tech4good/" target="_blank" rel="noopener noreferrer" class="text-game-green-light font-medium">Tech4Good</a>{' '}
+              program on the Humanitarian Technologies Board, funding grassroots technology projects in underserved
+              communities worldwide. I'm currently establishing an{' '}
+              <a href="https://sight.ieee.org" target="_blank" rel="noopener noreferrer" class="text-game-green-light font-medium">IEEE SIGHT</a>{' '}
+              group in New South Wales to build a local community of practice around humanitarian engineering. I hold a
+              background in electrical engineering, mathematics, development studies, and environmental engineering, and
+              spent eight years at the{' '}
+              <a href="https://www.acfr.usyd.edu.au" target="_blank" rel="noopener noreferrer" class="text-game-green-light font-medium">Australian Centre for Field Robotics</a>{' '}
+              at the University of Sydney.
+            </p>
+
+            <!-- Links -->
+            <div class="flex flex-wrap gap-4 pt-4 border-t border-game-border">
+              <a href="/cv.pdf" class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-game-green hover:text-game-green-light transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download CV
+              </a>
+              <a href="#" aria-label="Google Scholar profile" class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-game-muted hover:text-game-green-light transition-colors">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14zm0-24L0 9.5l4.838 3.94A8 8 0 0 1 12 9a8 8 0 0 1 7.162 4.44L24 9.5z"/>
+                </svg>
+                Google Scholar
+              </a>
+              <a href="#" aria-label="ORCID profile" class="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-game-muted hover:text-game-green-light transition-colors">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 0C5.372 0 0 5.372 0 12s5.372 12 12 12 12-5.372 12-12S18.628 0 12 0zM7.369 4.378c.525 0 .947.431.947.947s-.422.947-.947.947a.95.95 0 0 1-.947-.947c0-.525.422-.947.947-.947zm-.722 3.038h1.444v10.041H6.647V7.416zm3.562 0h3.9c3.712 0 5.344 2.653 5.344 5.025 0 2.578-2.016 5.016-5.325 5.016h-3.919V7.416zm1.444 1.303v7.444h2.297c3.272 0 3.872-2.944 3.872-3.722 0-2.016-1.284-3.722-3.9-3.722h-2.269z"/>
+                </svg>
+                ORCID
+              </a>
+            </div>
+          </div>
+
+          <!-- Headshot -->
+          <div class="hidden md:block shrink-0">
+            <Image
+              src={headshot}
+              alt="Matthew Imhoff at Vivid Sydney"
+              width={192}
+              height={256}
+              class="w-48 rounded-lg"
+              style="box-shadow: 0 0 0 2px #c0392b, 0 4px 16px rgba(0,0,0,0.6);"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,50 @@
+---
+interface Props {
+  track: string;
+  icon: string;
+  roles: {
+    title: string;
+    org: string;
+    bullets: string[];
+  }[];
+  footnote?: string;
+  award?: { label: string; detail: string };
+}
+
+const { track, icon, roles, footnote, award } = Astro.props;
+---
+
+<div class="bg-game-surface border border-game-border rounded-lg p-6 flex flex-col gap-5"
+  style="box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+
+  <div class="flex items-center gap-2 pb-3 border-b border-game-border">
+    <span class="text-lg" aria-hidden="true">{icon}</span>
+    <h3 class="font-bold text-xs uppercase tracking-widest text-game-green">{track}</h3>
+  </div>
+
+  {roles.map((role) => (
+    <div>
+      <p class="font-bold text-white leading-tight">{role.title}</p>
+      <p class="text-sm text-game-muted mb-3">{role.org}</p>
+      <ul class="space-y-1.5">
+        {role.bullets.map((bullet) => (
+          <li class="text-sm text-game-faint flex gap-2">
+            <span class="text-game-green mt-1 shrink-0">·</span>
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+
+  {award && (
+    <div class="mt-1 p-3 rounded-md border border-yellow-700/50 bg-yellow-900/20">
+      <p class="text-xs font-bold uppercase tracking-wider text-yellow-400">🏆 {award.label}</p>
+      <p class="text-xs text-game-faint mt-1">{award.detail}</p>
+    </div>
+  )}
+
+  {footnote && (
+    <p class="text-xs text-game-muted border-t border-game-border pt-3">{footnote}</p>
+  )}
+</div>

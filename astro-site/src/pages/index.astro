@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import About from '../components/About.astro';
+import Research from '../components/Research.astro';
+import Work from '../components/Work.astro';
+import Projects from '../components/Projects.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Matthew Imhoff",
+  "url": "https://mimhoff.com",
+  "jobTitle": "Technical Delivery Manager",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "UTS Rapido"
+  },
+  "sameAs": [
+    "https://linkedin.com/in/matthewimhoff",
+    "https://github.com/mimhoff"
+  ]
+});
+---
+
+<BaseLayout>
+  <Fragment slot="head-extra">
+    <script type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
+  <Header />
+  <main id="main">
+    <About />
+    <Research />
+    <Work />
+    <Projects />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>

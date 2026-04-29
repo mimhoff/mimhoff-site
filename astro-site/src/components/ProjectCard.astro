@@ -1,0 +1,58 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  tags: string[];
+  href: string;
+  label?: string;
+  iconSrc?: string;
+  iconAlt?: string;
+}
+
+const { title, description, tags, href, label = 'Play', iconSrc, iconAlt } = Astro.props;
+---
+
+<article class="bg-game-surface border border-game-border rounded-lg overflow-hidden transition-all hover:border-game-green group"
+  style="box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+
+  <!-- Thumbnail -->
+  <div class="h-32 bg-game-bg border-b border-game-border flex items-center justify-center">
+    {iconSrc ? (
+      <a href={href}
+        target={href.startsWith('http') ? '_blank' : undefined}
+        rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+        tabindex="-1" aria-hidden="true">
+        <img src={iconSrc} alt={iconAlt || title}
+          class="w-20 h-20 rounded-lg object-cover group-hover:scale-105 transition-transform"
+          style="box-shadow: 0 2px 8px rgba(0,0,0,0.4);" />
+      </a>
+    ) : (
+      <div class="w-20 h-20 rounded-lg bg-game-card border border-game-border flex items-center justify-center text-2xl">
+        🎮
+      </div>
+    )}
+  </div>
+
+  <div class="p-5">
+    <h3 class="font-bold text-white mb-1">{title}</h3>
+    <p class="text-sm text-game-faint mb-4 leading-relaxed">{description}</p>
+
+    <div class="flex flex-wrap gap-1.5 mb-4">
+      {tags.map((tag) => (
+        <span class="px-2 py-0.5 bg-game-card border border-game-border text-game-muted text-xs rounded font-medium uppercase tracking-wide">
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <a href={href}
+      class="inline-flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-game-green hover:text-game-green-light transition-colors"
+      target={href.startsWith('http') ? '_blank' : undefined}
+      rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+      {label}
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+      </svg>
+    </a>
+  </div>
+</article>

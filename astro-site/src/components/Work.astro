@@ -1,0 +1,62 @@
+---
+import RoleCard from './RoleCard.astro';
+---
+
+<section id="work" class="py-16 bg-game-bg border-t border-game-border">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-game-green mb-10">Work & Leadership</h2>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <RoleCard
+        track="Practice"
+        icon="🔧"
+        roles={[
+          {
+            title: "Technical Delivery Manager",
+            org: "UTS Rapido",
+            bullets: [
+              "R&D delivery for industry & social impact partners",
+              "AI/ML, data science, cloud projects",
+              "Mentoring junior engineers",
+            ],
+          },
+        ]}
+        footnote="Previously: Australian Centre for Field Robotics, University of Sydney (8 years)"
+      />
+
+      <RoleCard
+        track="Education"
+        icon="🎓"
+        roles={[
+          {
+            title: "Lecturer (Casual)",
+            org: "University of Technology Sydney",
+            bullets: [
+              "Technology Innovation Management",
+              "Internship program design",
+              "First-year engineering design assessment",
+            ],
+          },
+        ]}
+      />
+
+      <RoleCard
+        track="Leadership"
+        icon="🌏"
+        roles={[
+          {
+            title: "IEEE Humanitarian Technologies Board",
+            org: "IEEE",
+            bullets: [
+              "Chair, Tech4Good Program",
+              "Vice-Chair, IEEE NSW Section",
+              "Founder, IEEE SIGHT NSW",
+              "IEEE Senior Member",
+            ],
+          },
+        ]}
+        award={{ label: "EWB Lifetime Achievement Award", detail: "Engineers Without Borders Australia · 20+ years" }}
+      />
+    </div>
+  </div>
+</section>

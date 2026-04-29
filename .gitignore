@@ -1,0 +1,5 @@
+# Game repos are managed as separate GitHub repos
+mimhoff-games/
+
+# macOS
+.DS_Store

@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import PublicationCard from './PublicationCard.astro';
+
+const allPublications = await getCollection('publications');
+const publications = allPublications.sort((a, b) => b.data.year - a.data.year);
+---
+
+<section id="research" class="py-16 bg-game-surface border-t border-game-border">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-game-green mb-8">Research & Publications</h2>
+
+    <p class="text-game-faint leading-relaxed mb-10 max-w-2xl">
+      My research focuses on AI-enabled systems for humanitarian field operations, and on how engineering education
+      can better prepare students for social impact work. I'm particularly interested in the design challenges that
+      arise when technology meets unstructured, resource-constrained, and community-driven environments.
+    </p>
+
+    <div class="space-y-4">
+      {publications.map((pub) => (
+        <PublicationCard
+          title={pub.data.title}
+          authors={pub.data.authors}
+          venue={pub.data.venue}
+          year={pub.data.year}
+          status={pub.data.status}
+          summary={pub.data.summary}
+          doi={pub.data.doi}
+          pdf={pub.data.pdf}
+        />
+      ))}
+    </div>
+  </div>
+</section>

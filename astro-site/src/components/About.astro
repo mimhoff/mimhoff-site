@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import headshot from '../assets/headshot.jpg';
+---
+
+<section id="about" class="py-16 bg-game-bg">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-game-green mb-8">About</h2>
+
+    <div class="grid md:grid-cols-[1fr_auto] gap-12 items-start">
+      <div class="space-y-5 text-game-faint leading-relaxed">
+        <p>
+          I work at the intersection of technology, humanitarian action, and education. My research interest is in
+          how AI and software systems can be designed and deployed in humanitarian field contexts — not as
+          hypothetical interventions, but as tools shaped by the constraints and realities of community-facing work.
+        </p>
+
+        <p class="text-game-muted text-sm">
+          Currently: Technical Delivery Manager at UTS Rapido, IEEE Tech4Good chair, and Lecturer (Casual) at UTS.
+        </p>
+
+        <p>
+          <a href="/about" class="text-game-green-light font-medium hover:underline">More about me →</a>
+        </p>
+      </div>
+
+      <!-- Headshot -->
+      <div class="hidden md:block shrink-0">
+        <Image
+          src={headshot}
+          alt="Matthew Imhoff at Vivid Sydney"
+          width={192}
+          height={256}
+          class="w-48 rounded-lg"
+          style="box-shadow: 0 0 0 2px #c0392b, 0 4px 16px rgba(0,0,0,0.6);"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+---
+import ProjectCard from './ProjectCard.astro';
+---
+
+<section id="projects" class="py-16 bg-game-surface border-t border-game-border">
+  <div class="max-w-4xl mx-auto px-6">
+    <h2 class="text-xs font-bold uppercase tracking-widest text-game-green mb-3">Side Projects</h2>
+    <p class="text-game-muted mb-10 text-sm">
+      I build browser games in my spare time — mostly as an excuse to think about game mechanics, lateral thinking,
+      and AI opponents.
+    </p>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <ProjectCard
+        title="WordLock"
+        description="Wordle with a strategic twist — each guess locks letters in place, forcing you to plan ahead."
+        tags={["JavaScript", "Game Design"]}
+        href="/wordlock"
+        iconSrc="/icons/wordlock-icon.png"
+        iconAlt="WordLock icon"
+      />
+      <ProjectCard
+        title="Duck Tic-Tac-Toe"
+        description="Classic tic-tac-toe with an AI opponent and a duck blocker mechanic. Challenge Quacky or play with a friend."
+        tags={["JavaScript", "AI"]}
+        href="/duck-tictactoe"
+        iconSrc="/icons/duck-tictactoe-icon.png"
+        iconAlt="Duck Tic-Tac-Toe icon"
+      />
+      <ProjectCard
+        title="Chain 4"
+        description="Get 4 in a row to score points and build combos. Triangular scoring and cascading markers."
+        tags={["JavaScript", "Game Design"]}
+        href="/chain-4"
+        iconSrc="/icons/chain-4-icon.png"
+        iconAlt="Chain 4 icon"
+      />
+    </div>
+  </div>
+</section>
