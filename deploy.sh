@@ -29,10 +29,11 @@ RED='\033[0;31m'
 NC='\033[0m'
 
 RSYNC_OPTS=(-avz --delete --chmod=D755,F644)
+DRY_RUN=false
 TARGETS=()
 for arg in "$@"; do
     case "$arg" in
-        --dry-run|-n) RSYNC_OPTS+=(--dry-run) ;;
+        --dry-run|-n) RSYNC_OPTS+=(--dry-run); DRY_RUN=true ;;
         site|wordlock|duck) TARGETS+=("$arg") ;;
         *) echo -e "${RED}Unknown argument: $arg${NC}"; echo "Usage: $0 [--dry-run] [site] [wordlock] [duck]"; exit 1 ;;
     esac
@@ -40,6 +41,7 @@ done
 [ ${#TARGETS[@]} -eq 0 ] && TARGETS=(site wordlock duck)
 
 wants() { [[ " ${TARGETS[*]} " == *" $1 "* ]]; }
+done_msg() { if $DRY_RUN; then echo "$1 dry run complete (nothing uploaded)"; else echo "$1 deployed"; fi; }
 
 # Test and build a Vite game, then rsync its dist/ (not the source) to the server.
 # --delete removes files left over from older versions (e.g. WordLock v2's js/ and words.js).
@@ -55,13 +57,13 @@ deploy_game() {
         exit 1
     fi
     rsync "${RSYNC_OPTS[@]}" dist/ "${USERNAME}@${SERVER}:${remote}/"
-    echo -e "${GREEN}✓ ${name} deployed${NC}"
+    echo -e "${GREEN}✓ $(done_msg "$name")${NC}"
     echo ""
 }
 
 echo -e "${BLUE}================================${NC}"
 echo -e "${BLUE}mimhoff.com deployment: ${TARGETS[*]}${NC}"
-[[ " ${RSYNC_OPTS[*]} " == *" --dry-run "* ]] && echo -e "${BLUE}(dry run: nothing will be uploaded)${NC}"
+$DRY_RUN && echo -e "${BLUE}(dry run: nothing will be uploaded)${NC}"
 echo -e "${BLUE}================================${NC}"
 echo ""
 
@@ -76,7 +78,7 @@ if wants site; then
         --exclude 'chain-4/' \
         --exclude 'shared-game-components/' \
         "${ASTRO_DIR}/dist/" "${USERNAME}@${SERVER}:${REMOTE_ROOT}/"
-    echo -e "${GREEN}✓ Profile site deployed${NC}"
+    echo -e "${GREEN}✓ $(done_msg "Profile site")${NC}"
     echo ""
 fi
 
@@ -84,6 +86,11 @@ wants wordlock && deploy_game "WordLock" "${GAMES_DIR}/wordlock" "$REMOTE_WORDLO
 wants duck && deploy_game "Duck Tic-Tac-Toe" "${GAMES_DIR}/duck-tictactoe" "$REMOTE_DUCKTTT"
 
 echo -e "${BLUE}================================${NC}"
+if $DRY_RUN; then
+    echo -e "${GREEN}Dry run complete. Nothing was uploaded.${NC}"
+    echo -e "${BLUE}================================${NC}"
+    exit 0
+fi
 echo -e "${GREEN}Deployment complete!${NC}"
 echo -e "${BLUE}================================${NC}"
 echo ""
