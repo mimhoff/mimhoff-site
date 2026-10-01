@@ -50,7 +50,7 @@ echo ""
 
 # Step 3: Sync game icons
 echo -e "${GREEN}Step 3: Syncing game icons...${NC}"
-cp "${GAMES_DIR}/wordlock/icons/icon-512x512.png"    "${GAMES_DIR}/site/icons/wordlock-icon.png"
+cp "${GAMES_DIR}/wordlock/public/icons/icon-512x512.png" "${GAMES_DIR}/site/icons/wordlock-icon.png"
 cp "${GAMES_DIR}/duck-tictactoe/icons/icon-web-512.png" "${GAMES_DIR}/site/icons/duck-tictactoe-icon.png"
 cp "${GAMES_DIR}/chain-4/icons/icon-512x512.png"     "${GAMES_DIR}/site/icons/chain-4-icon.png"
 echo -e "${GREEN}✓ Icons synced${NC}"
@@ -64,28 +64,16 @@ rsync -avz --delete \
 echo -e "${GREEN}✓ Shared components deployed${NC}"
 echo ""
 
-# Step 5: Deploy WordLock
-echo -e "${GREEN}Step 5: Deploying WordLock...${NC}"
+# Step 5: Build and deploy WordLock
+# v3 is a Vite app: only the built dist/ folder is published, never the source.
+echo -e "${GREEN}Step 5: Building and deploying WordLock...${NC}"
+cd "${GAMES_DIR}/wordlock"
+npm ci
+npm test
+npm run build
 rsync -avz --delete \
     --chmod=D755,F644 \
-    --exclude 'node_modules/' \
-    --exclude 'android/' \
-    --exclude 'ios/' \
-    --exclude 'www/' \
-    --exclude 'docs/' \
-    --exclude '.git/' \
-    --exclude '.gitignore' \
-    --exclude 'package.json' \
-    --exclude 'package-lock.json' \
-    --exclude 'capacitor.config.json' \
-    --exclude 'landing.html' \
-    --exclude 'deploy.sh' \
-    --exclude 'DEPLOYMENT.md' \
-    --exclude 'play-store-assets/' \
-    --exclude '*.keystore' \
-    --exclude '*.jks' \
-    --exclude 'keystore-info.txt' \
-    "${GAMES_DIR}/wordlock/" ${USERNAME}@${SERVER}:${REMOTE_WORDLOCK}/
+    "${GAMES_DIR}/wordlock/dist/" ${USERNAME}@${SERVER}:${REMOTE_WORDLOCK}/
 echo -e "${GREEN}✓ WordLock deployed${NC}"
 echo ""
 
