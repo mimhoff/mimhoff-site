@@ -71,12 +71,13 @@ if wants site; then
     echo -e "${GREEN}Building and deploying profile site...${NC}"
     cd "$ASTRO_DIR"
     npm run build
-    # Game subdirectories are excluded so --delete doesn't remove them
+    # Game subdirectories (and Dreamhost's .dh-diag link) are excluded so --delete doesn't remove them
     rsync "${RSYNC_OPTS[@]}" \
         --exclude 'wordlock/' \
         --exclude 'duck-tictactoe/' \
         --exclude 'chain-4/' \
         --exclude 'shared-game-components/' \
+        --exclude '.dh-diag' \
         "${ASTRO_DIR}/dist/" "${USERNAME}@${SERVER}:${REMOTE_ROOT}/"
     echo -e "${GREEN}✓ $(done_msg "Profile site")${NC}"
     echo ""
