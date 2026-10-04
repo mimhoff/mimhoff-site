@@ -26,15 +26,13 @@ const canonicalURL = new URL(Astro.url.pathname, 'https://mimhoff.com');
   <!-- Open Graph -->
   <meta property="og:title" content="Matthew Imhoff" />
   <meta property="og:description" content={description} />
-  <meta property="og:image" content="/og-image.png" />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:type" content="website" />
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="Matthew Imhoff" />
   <meta name="twitter:description" content={description} />
-  <meta name="twitter:image" content="/og-image.png" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

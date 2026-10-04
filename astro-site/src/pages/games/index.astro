@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Games — Matthew Imhoff"
+  description="Free browser games by Matthew Imhoff, starting with WordLock: the word game where you need to lock in."
+>
+  <Fragment slot="head-extra">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  </Fragment>
+
+  <div class="hub">
+    <header class="top">
+      <a href="/games" class="brand">Games</a>
+      <a href="/" class="by">by Matthew Imhoff</a>
+    </header>
+
+    <main id="main">
+      <a href="/wordlock/" class="game">
+        <img src="/wordlock/icons/icon-192x192.png" alt="" width="96" height="96" />
+        <div class="info">
+          <h1>WordLock</h1>
+          <p>The word game where you need to lock in.</p>
+          <p class="meta">Daily puzzle · Practice mode</p>
+        </div>
+        <span class="play">Play</span>
+      </a>
+    </main>
+
+    <footer class="bottom">
+      <a href="/wordlock/privacy-policy.html">Privacy policy</a>
+      <a href="https://ko-fi.com/mimhoff" target="_blank" rel="noopener noreferrer">Ko-fi</a>
+      <a href="/">mimhoff.com</a>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  /* WordLock's palette and font (games/wordlock/src/styles.css), so the hub and the game match. */
+  .hub {
+    --bg: #f6f5f1;
+    --surface: #ffffff;
+    --text: #15171a;
+    --muted: #5f636a;
+    --border: #dcd9d0;
+    --locked: #b3203a;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 16px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+
+  /* This page only: the site's global stylesheet gives body the old dark background. */
+  :global(body) {
+    background: #f6f5f1;
+  }
+
+  .hub a {
+    color: inherit;
+  }
+
+  .hub a:hover {
+    text-decoration: none;
+  }
+
+  .top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .by {
+    color: var(--muted) !important;
+    font-size: 0.95rem;
+  }
+
+  main {
+    flex: 1;
+    padding: 40px 0;
+  }
+
+  .game {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+    transition: border-color 150ms, transform 150ms;
+  }
+
+  .game:hover {
+    border-color: var(--locked);
+    transform: translateY(-2px);
+  }
+
+  .game img {
+    width: 96px;
+    height: 96px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .info p {
+    margin: 6px 0 0;
+  }
+
+  .meta {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .play {
+    padding: 12px 22px;
+    border-radius: 999px;
+    background: var(--locked);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 480px) {
+    .game {
+      flex-wrap: wrap;
+    }
+
+    .game img {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+    }
+
+    .play {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  .bottom {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding: 20px 0 32px;
+    border-top: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+
+  .bottom a {
+    color: var(--muted) !important;
+  }
+</style>
