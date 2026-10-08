@@ -3,9 +3,10 @@
 # mimhoff.com deployment script
 # Builds the Astro profile site and the games, then rsyncs each build to Dreamhost.
 #
-# Usage: ./deploy.sh [--dry-run] [site] [wordlock] [duck] [mystery] [chang]
+# Usage: ./deploy.sh [--dry-run] [--skip-tests] [site] [wordlock] [duck] [mystery] [chang]
 #   No targets = deploy site, wordlock and duck (test builds like mystery and chang only when named).
 #   --dry-run  build and test as normal, but only show what rsync would change.
+#   --skip-tests  build and deploy games without running their tests.
 #
 # Chain 4 and shared-game-components are still live on the server but have no local
 # source any more; this script leaves them untouched.
@@ -32,12 +33,14 @@ NC='\033[0m'
 
 RSYNC_OPTS=(-avz --delete --chmod=D755,F644)
 DRY_RUN=false
+SKIP_TESTS=false
 TARGETS=()
 for arg in "$@"; do
     case "$arg" in
         --dry-run|-n) RSYNC_OPTS+=(--dry-run); DRY_RUN=true ;;
+        --skip-tests) SKIP_TESTS=true ;;
         site|wordlock|duck|mystery|chang) TARGETS+=("$arg") ;;
-        *) echo -e "${RED}Unknown argument: $arg${NC}"; echo "Usage: $0 [--dry-run] [site] [wordlock] [duck] [mystery] [chang]"; exit 1 ;;
+        *) echo -e "${RED}Unknown argument: $arg${NC}"; echo "Usage: $0 [--dry-run] [--skip-tests] [site] [wordlock] [duck] [mystery] [chang]"; exit 1 ;;
     esac
 done
 [ ${#TARGETS[@]} -eq 0 ] && TARGETS=(site wordlock duck)
@@ -52,7 +55,7 @@ deploy_game() {
     echo -e "${GREEN}Deploying ${name}...${NC}"
     cd "$dir"
     [ -d node_modules ] || npm ci
-    npm test
+    if $SKIP_TESTS; then echo -e "${RED}Skipping ${name} tests${NC}"; else npm test; fi
     npm run build
     if [ ! -f dist/index.html ]; then
         echo -e "${RED}✗ ${name}: dist/ is missing index.html, not deploying${NC}"
