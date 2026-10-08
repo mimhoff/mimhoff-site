@@ -14,7 +14,7 @@ export default defineConfig({
   },
 
   // The games are separate Vite builds deployed next to this site, so list them by hand.
-  // Test builds (frame-job, chang-and-me) stay out until they're public.
+  // Test builds (mystery-machine, chang-and-me) stay out until they're public.
   integrations: [
     sitemap({
       customPages: [

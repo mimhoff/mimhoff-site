@@ -3,8 +3,8 @@
 # mimhoff.com deployment script
 # Builds the Astro profile site and the games, then rsyncs each build to Dreamhost.
 #
-# Usage: ./deploy.sh [--dry-run] [site] [wordlock] [duck] [frame]
-#   No targets = deploy everything.
+# Usage: ./deploy.sh [--dry-run] [site] [wordlock] [duck] [mystery] [chang]
+#   No targets = deploy site, wordlock and duck (test builds like mystery and chang only when named).
 #   --dry-run  build and test as normal, but only show what rsync would change.
 #
 # Chain 4 and shared-game-components are still live on the server but have no local
@@ -18,7 +18,8 @@ USERNAME="mimhoff"
 REMOTE_ROOT="mimhoff.com"
 REMOTE_WORDLOCK="mimhoff.com/wordlock"
 REMOTE_DUCKTTT="mimhoff.com/duck-tictactoe"
-REMOTE_FRAMEJOB="mimhoff.com/frame-job"
+REMOTE_MYSTERY="mimhoff.com/mystery-machine"
+REMOTE_CHANG="mimhoff.com/chang-and-me"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ASTRO_DIR="${SCRIPT_DIR}/astro-site"
@@ -35,8 +36,8 @@ TARGETS=()
 for arg in "$@"; do
     case "$arg" in
         --dry-run|-n) RSYNC_OPTS+=(--dry-run); DRY_RUN=true ;;
-        site|wordlock|duck|frame) TARGETS+=("$arg") ;;
-        *) echo -e "${RED}Unknown argument: $arg${NC}"; echo "Usage: $0 [--dry-run] [site] [wordlock] [duck] [frame]"; exit 1 ;;
+        site|wordlock|duck|mystery|chang) TARGETS+=("$arg") ;;
+        *) echo -e "${RED}Unknown argument: $arg${NC}"; echo "Usage: $0 [--dry-run] [site] [wordlock] [duck] [mystery] [chang]"; exit 1 ;;
     esac
 done
 [ ${#TARGETS[@]} -eq 0 ] && TARGETS=(site wordlock duck)
@@ -76,7 +77,8 @@ if wants site; then
     rsync "${RSYNC_OPTS[@]}" \
         --exclude 'wordlock/' \
         --exclude 'duck-tictactoe/' \
-        --exclude 'frame-job/' \
+        --exclude 'mystery-machine/' \
+        --exclude 'chang-and-me/' \
         --exclude 'chain-4/' \
         --exclude 'shared-game-components/' \
         --exclude '.dh-diag' \
@@ -87,7 +89,8 @@ fi
 
 wants wordlock && deploy_game "WordLock" "${GAMES_DIR}/wordlock" "$REMOTE_WORDLOCK"
 wants duck && deploy_game "Duck Tic-Tac-Toe" "${GAMES_DIR}/duck-tictactoe" "$REMOTE_DUCKTTT"
-wants frame && deploy_game "Frame Job" "${GAMES_DIR}/frame-job" "$REMOTE_FRAMEJOB"
+wants mystery && deploy_game "Mystery Machine" "${GAMES_DIR}/mystery-machine" "$REMOTE_MYSTERY"
+wants chang && deploy_game "Chang & Me" "${GAMES_DIR}/chang-and-me" "$REMOTE_CHANG"
 
 echo -e "${BLUE}================================${NC}"
 if $DRY_RUN; then
@@ -102,5 +105,6 @@ echo "Live at:"
 wants site && echo "  https://mimhoff.com"
 wants wordlock && echo "  https://mimhoff.com/wordlock"
 wants duck && echo "  https://mimhoff.com/duck-tictactoe"
-wants frame && echo "  https://mimhoff.com/frame-job"
+wants mystery && echo "  https://mimhoff.com/mystery-machine"
+wants chang && echo "  https://mimhoff.com/chang-and-me"
 exit 0
