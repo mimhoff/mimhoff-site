@@ -31,7 +31,12 @@ BLUE='\033[0;34m'
 RED='\033[0;31m'
 NC='\033[0m'
 
-RSYNC_OPTS=(-avz --delete --chmod=D755,F644)
+# The shared server is often overloaded and slow to log in (or drops the login), so open
+# one SSH connection up front and have every rsync reuse it. Keepalives stop a dead
+# connection from hanging forever.
+SSH_CONTROL="${TMPDIR:-/tmp}/mimhoff-deploy-$$"
+SSH_CMD="ssh -o ControlPath=${SSH_CONTROL} -o ControlMaster=auto -o ConnectTimeout=60 -o ServerAliveInterval=15 -o ServerAliveCountMax=4"
+RSYNC_OPTS=(-avz --delete --chmod=D755,F644 -e "$SSH_CMD")
 DRY_RUN=false
 SKIP_TESTS=false
 TARGETS=()
@@ -45,6 +50,34 @@ for arg in "$@"; do
 done
 [ ${#TARGETS[@]} -eq 0 ] && TARGETS=(site wordlock duck)
 
+# Close the shared connection.
+disconnect() { $SSH_CMD -O exit "${USERNAME}@${SERVER}" 2>/dev/null || true; }
+
+# Open the shared connection, retrying because the server sometimes closes it mid-login.
+connect() {
+    for attempt in 1 2 3 4 5; do
+        $SSH_CMD -o ControlPersist=yes -fN "${USERNAME}@${SERVER}" && return 0
+        echo -e "${RED}Couldn't connect to ${SERVER} (attempt ${attempt}), retrying...${NC}"
+        sleep 5
+    done
+    echo -e "${RED}✗ Couldn't connect to ${SERVER}; it may be overloaded. Try again later.${NC}"
+    exit 1
+}
+trap disconnect EXIT
+
+# rsync, retrying if the connection drops (safe: rsync only sends what's still different).
+push() {
+    for attempt in 1 2 3; do
+        rsync "${RSYNC_OPTS[@]}" "$@" && return 0
+        echo -e "${RED}rsync failed (attempt ${attempt}), reconnecting...${NC}"
+        disconnect
+        sleep 5
+        connect
+    done
+    echo -e "${RED}✗ rsync kept failing; nothing more was uploaded${NC}"
+    exit 1
+}
+
 wants() { [[ " ${TARGETS[*]} " == *" $1 "* ]]; }
 done_msg() { if $DRY_RUN; then echo "$1 dry run complete (nothing uploaded)"; else echo "$1 deployed"; fi; }
 
@@ -54,14 +87,18 @@ deploy_game() {
     local name="$1" dir="$2" remote="$3"
     echo -e "${GREEN}Deploying ${name}...${NC}"
     cd "$dir"
-    [ -d node_modules ] || npm ci
+    # Reinstall when the lockfile has changed since the last install (a missing package
+    # otherwise builds with a warning and ships broken, as noto-emoji once did).
+    if [ ! -f node_modules/.package-lock.json ] || [ package-lock.json -nt node_modules/.package-lock.json ]; then
+        npm ci
+    fi
     if $SKIP_TESTS; then echo -e "${RED}Skipping ${name} tests${NC}"; else npm test; fi
     npm run build
     if [ ! -f dist/index.html ]; then
         echo -e "${RED}✗ ${name}: dist/ is missing index.html, not deploying${NC}"
         exit 1
     fi
-    rsync "${RSYNC_OPTS[@]}" dist/ "${USERNAME}@${SERVER}:${remote}/"
+    push dist/ "${USERNAME}@${SERVER}:${remote}/"
     echo -e "${GREEN}✓ $(done_msg "$name")${NC}"
     echo ""
 }
@@ -72,12 +109,16 @@ $DRY_RUN && echo -e "${BLUE}(dry run: nothing will be uploaded)${NC}"
 echo -e "${BLUE}================================${NC}"
 echo ""
 
+echo -e "${BLUE}Connecting to ${SERVER}...${NC}"
+connect
+echo ""
+
 if wants site; then
     echo -e "${GREEN}Building and deploying profile site...${NC}"
     cd "$ASTRO_DIR"
     npm run build
     # Game subdirectories (and Dreamhost's .dh-diag link) are excluded so --delete doesn't remove them
-    rsync "${RSYNC_OPTS[@]}" \
+    push \
         --exclude 'wordlock/' \
         --exclude 'duck-tictactoe/' \
         --exclude 'mystery-machine/' \
